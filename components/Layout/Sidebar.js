@@ -7,7 +7,7 @@ import { SlHome } from 'react-icons/sl'
 import { BsInfoSquare, BsEnvelopeAt } from 'react-icons/bs'
 import { FaTshirt, FaRedhat } from 'react-icons/fa'
 
-import logo from '@/img/logo.svg'
+import logo from '@/img/logo uum.png'
 
 export default function Sidebar({ show, setter }) {
     const router = useRouter();
@@ -53,8 +53,10 @@ export default function Sidebar({ show, setter }) {
             <div className={`${className}${appendClass}`}>
                 <div className="p-2 flex">
                     <Link href="/">
-                        {/*eslint-disable-next-line*/}
-                        <img src={logo.src} alt="Company Logo" width={300} height={300} />
+                        <div style={{backgroundColor: 'white', padding: '10px'}}>
+                            {/*eslint-disable-next-line*/}
+                            <img src={logo.src} alt="Company Logo" width={300} height={300} />
+                        </div>
                     </Link>
                 </div>
                 <div className="flex flex-col">

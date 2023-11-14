@@ -5,6 +5,7 @@ import {
     FormLabel,
     Select,
     GridItem, Input,
+    Flex, Table, Thead, Tbody, Tr, Th, Td, TableCaption, Spacer, Box,
 } from '@chakra-ui/react'
 import React from "react";
 
@@ -12,9 +13,48 @@ export const Form2 = () => {
     return (
         <>
             <Heading w="100%" textAlign={"center"} fontWeight="normal" mb="2%">
-                User Details
+                Pendapatan Bulanan
             </Heading>
-            <FormControl as={GridItem} colSpan={[6, 3]}>
+            <Flex direction="row" justify="space-between">
+                <Box>
+                    <Box borderWidth="1px" borderRadius="lg" p="2" mb="2">
+                        <Heading textAlign={"center"} size="sm">Pegawai</Heading>
+                    </Box>
+                    <Table variant="simple">
+                        <Thead>
+                            <Tr>
+                                <Th>BIL</Th>
+                                <Th>KETERANGAN</Th>
+                                <Th>AMUAN</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {/* Your rows for the first table go here */}
+                        </Tbody>
+                    </Table>
+                </Box>
+
+                <Box width="50px" />
+
+                <Box>
+                    <Box borderWidth="1px" borderRadius="lg" p="2" mb="2">
+                        <Heading textAlign={"center"} size="sm">Suami/Isteri</Heading>
+                    </Box>
+                    <Table variant="simple">
+                        <Thead>
+                            <Tr>
+                                <Th>BIL</Th>
+                                <Th>KETERANGAN</Th>
+                                <Th>AMUAN</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {/* Your rows for the second table go here */}
+                        </Tbody>
+                    </Table>
+                </Box>
+            </Flex>
+            <FormControl>
                 <FormLabel
                     htmlFor="country"
                     fontSize="sm"
