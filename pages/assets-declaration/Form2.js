@@ -15,6 +15,7 @@ export const Form2 = () => {
             <Heading w="100%" textAlign={"center"} fontWeight="normal" mb="2%">
                 Pendapatan Bulanan
             </Heading>
+            <br/>
             <Flex direction="row" justify="space-between">
                 <Box>
                     <Box borderWidth="1px" borderRadius="lg" p="2" mb="2">
@@ -25,7 +26,7 @@ export const Form2 = () => {
                             <Tr>
                                 <Th>BIL</Th>
                                 <Th>KETERANGAN</Th>
-                                <Th>AMUAN</Th>
+                                <Th>AMAUN</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -45,7 +46,7 @@ export const Form2 = () => {
                             <Tr>
                                 <Th>BIL</Th>
                                 <Th>KETERANGAN</Th>
-                                <Th>AMUAN</Th>
+                                <Th>AMAUN</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -54,9 +55,28 @@ export const Form2 = () => {
                     </Table>
                 </Box>
             </Flex>
+            <br/>
+            <Box>
+                <Box borderWidth="1px" borderRadius="lg" p="2" mb="2">
+                    <Heading textAlign={"center"} size="sm">Lain-lain pendapatan</Heading>
+                </Box>
+                <Table variant="simple">
+                    <Thead>
+                        <Tr>
+                            <Th>BIL</Th>
+                            <Th>KETERANGAN</Th>
+                            <Th>AMAUN</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {/* Your rows for the first table go here */}
+                    </Tbody>
+                </Table>
+            </Box>
+            <br/>
             <FormControl>
                 <FormLabel
-                    htmlFor="country"
+                    htmlFor="keterangan"
                     fontSize="sm"
                     fontWeight="md"
                     color="gray.700"
@@ -64,28 +84,19 @@ export const Form2 = () => {
                         color: "gray.50"
                     }}
                 >
-                    Country / Region
+                    Keterangan
                 </FormLabel>
-                <Select
-                    id="country"
-                    name="country"
-                    autoComplete="country"
-                    placeholder="Select option"
-                    focusBorderColor="brand.400"
-                    shadow="sm"
-                    size="sm"
-                    w="full"
-                    rounded="md"
+                < Input
+                    id='keterangan'
+                    name='keterangan'
+                    placeholder='Keterangan'
                 >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>Mexico</option>
-                </Select>
+                </Input>
             </FormControl>
 
             <FormControl as={GridItem} colSpan={6}>
                 <FormLabel
-                    htmlFor="street_address"
+                    htmlFor="salary_jenis"
                     fontSize="sm"
                     fontWeight="md"
                     color="gray.700"
@@ -94,24 +105,21 @@ export const Form2 = () => {
                     }}
                     mt="2%"
                 >
-                    Street address
+                    Jenis
                 </FormLabel>
-                <Input
-                    type="text"
-                    name="street_address"
-                    id="street_address"
-                    autoComplete="street-address"
-                    focusBorderColor="brand.400"
-                    shadow="sm"
-                    size="sm"
-                    w="full"
-                    rounded="md"
-                />
+                <Select
+                    id="salary_jenis"
+                    name="salary_jenis"
+                    placeholder="Jenis"
+                >
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                </Select>
             </FormControl>
 
             <FormControl as={GridItem} colSpan={[6, 6, null, 2]}>
                 <FormLabel
-                    htmlFor="city"
+                    htmlFor="salary_jumlah"
                     fontSize="sm"
                     fontWeight="md"
                     color="gray.700"
@@ -120,13 +128,12 @@ export const Form2 = () => {
                     }}
                     mt="2%"
                 >
-                    City
+                    Jumlah (RM)
                 </FormLabel>
                 <Input
-                    type="text"
-                    name="city"
-                    id="city"
-                    autoComplete="city"
+                    type="number"
+                    name="salary_jumlah"
+                    id="salary_jumlah"
                     focusBorderColor="brand.400"
                     shadow="sm"
                     size="sm"
@@ -135,57 +142,6 @@ export const Form2 = () => {
                 />
             </FormControl>
 
-            <FormControl as={GridItem} colSpan={[6, 3, null, 2]}>
-                <FormLabel
-                    htmlFor="state"
-                    fontSize="sm"
-                    fontWeight="md"
-                    color="gray.700"
-                    _dark={{
-                        color: "gray.50"
-                    }}
-                    mt="2%"
-                >
-                    State / Province
-                </FormLabel>
-                <Input
-                    type="text"
-                    name="state"
-                    id="state"
-                    autoComplete="state"
-                    focusBorderColor="brand.400"
-                    shadow="sm"
-                    size="sm"
-                    w="full"
-                    rounded="md"
-                />
-            </FormControl>
-
-            <FormControl as={GridItem} colSpan={[6, 3, null, 2]}>
-                <FormLabel
-                    htmlFor="postal_code"
-                    fontSize="sm"
-                    fontWeight="md"
-                    color="gray.700"
-                    _dark={{
-                        color: "gray.50"
-                    }}
-                    mt="2%"
-                >
-                    ZIP / Postal
-                </FormLabel>
-                <Input
-                    type="text"
-                    name="postal_code"
-                    id="postal_code"
-                    autoComplete="postal-code"
-                    focusBorderColor="brand.400"
-                    shadow="sm"
-                    size="sm"
-                    w="full"
-                    rounded="md"
-                />
-            </FormControl>
         </>
     )
 }

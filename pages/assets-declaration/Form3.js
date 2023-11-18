@@ -1,93 +1,146 @@
-import { useState } from 'react'
+import React from "react";
 import {
-    Progress,
     Box,
-    ButtonGroup,
     Button,
-    Heading,
-    Flex,
     FormControl,
-    GridItem,
     FormLabel,
     Input,
-    Select,
-    SimpleGrid,
-    InputLeftAddon,
-    InputGroup,
-    Textarea,
-    FormHelperText,
-    InputRightElement,
-} from '@chakra-ui/react'
-
-import { useToast } from '@chakra-ui/react'
-import React from 'react'
-import Layout from 'components/Layout'
+    VStack,
+    Flex, Table, Thead, Tbody, Tr, Th, Td, TableCaption, Spacer, Heading, Select
+} from "@chakra-ui/react";
 
 export const Form3 = () => {
-    const [show, setShow] = useState(false)
-    const handleClick = () => setShow(!show)
     return (
         <>
-            <Heading w="100%" textAlign={"center"} fontWeight="normal">
-                Social Handles
+            <Heading w="100%" textAlign={"center"} fontWeight="normal" mb="2%">
+                Maklumat Harta
             </Heading>
-            <SimpleGrid columns={1} spacing={6}>
-                <FormControl as={GridItem} colSpan={[3, 2]}>
-                    <FormLabel
-                        fontSize="sm"
-                        fontWeight="md"
-                        color="gray.700"
-                        _dark={{
-                            color: "gray.50"
-                        }}
+
+            <br/>
+            <Box overflowX="auto">
+                <Table variant="simple" size="sm">
+                    <Thead>
+                        <Tr>
+                            <Th>BIL</Th>
+                            <Th>JENIS</Th>
+                            <Th>PEMILIK</Th>
+                            <Th>KETERANGAN HARTA</Th>
+                            <Th>NO SIJIL PENDAFTARAN</Th>
+                            <Th>TARIKH PEMILIKAN</Th>
+                            <Th>JUMLAH KUANTITI</Th>
+                            <Th>UKURAN KUANTITI</Th>
+                            <Th>NILAI PEROLEH HARTA</Th>
+                            <Th>ANGGARAN NILAI SEMASA</Th>
+                            <Th>CARA DIPEROLEHI</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {/* Your rows for the first table go here */}
+                    </Tbody>
+                </Table>
+            </Box>
+            <br/>
+        <VStack spacing={5}>
+            <Box w="500px">
+                <FormControl id="jenisHarta">
+                    <FormLabel>Jenis Harta</FormLabel>
+                    <Select
+                        id="jenisHarta"
                     >
-                        Website
-                    </FormLabel>
-                    <InputGroup size="sm">
-                        <InputLeftAddon
-                            bg="gray.50"
-                            _dark={{
-                                bg: "gray.800"
-                            }}
-                            color="gray.500"
-                            rounded="md"
-                        >
-                            http://
-                        </InputLeftAddon>
-                        <Input
-                            type="tel"
-                            placeholder="www.example.com"
-                            focusBorderColor="brand.400"
-                            rounded="md"
-                        />
-                    </InputGroup>
+                        <option value="saham">Saham</option>
+                        <option value="tanah">Tanah</option>
+                        <option value="kenderaan">Kenderaan</option>
+                        <option value="lain">Lain-lain</option>
+                    </Select>
                 </FormControl>
 
-                <FormControl id="email" mt={1}>
-                    <FormLabel
-                        fontSize="sm"
-                        fontWeight="md"
-                        color="gray.700"
-                        _dark={{
-                            color: "gray.50"
-                        }}
+                <FormControl id="pemilikHarta">
+                    <FormLabel>Pemilik Harta</FormLabel>
+                    <Select
+                        id = "pemilikHarta"
                     >
-                        About
-                    </FormLabel>
-                    <Textarea
-                        placeholder="you@example.com"
-                        rows={3}
-                        shadow="sm"
-                        focusBorderColor="brand.400"
-                        fontSize={{
-                            sm: "sm"
-                        }}
-                    />
-                    <FormHelperText>
-                        Brief description for your profile. URLs are hyperlinked.
-                    </FormHelperText>
+                        <option value="sendiri">Sendiri</option>
+                        <option value="isteri">Isteri/Suami</option>
+                        <option value="anak">Anak</option>
+                        <option value="lain">Lain-lain</option>
+                    </Select>
                 </FormControl>
-            </SimpleGrid>
+
+                <FormControl id="keteranganHarta">
+                    <FormLabel>Keterangan Harta</FormLabel>
+                    <Input type="text" />
+                </FormControl>
+
+                <FormControl id="alamatHarta">
+                    <FormLabel>Alamat Harta</FormLabel>
+                    <Input type="text" />
+                </FormControl>
+
+                <FormControl id="poskod">
+                    <FormLabel>Poskod</FormLabel>
+                    <Input type="text" />
+                </FormControl>
+
+                <FormControl id="bandar">
+                    <FormLabel>Bandar</FormLabel>
+                    <Input type="text" />
+                </FormControl>
+
+                <FormControl id="negeri">
+                    <FormLabel>Negeri</FormLabel>
+                    <Input type="text" />
+                </FormControl>
+
+                <FormControl id="noSijilPendaftaran">
+                    <FormLabel>No. Sijil Pendaftaran</FormLabel>
+                    <Input type="text" />
+                </FormControl>
+
+                <FormControl id="tarikhPemilikan">
+                    <FormLabel>Tarikh Pemilikan</FormLabel>
+                    <Input type="date" />
+                </FormControl>
+
+                <FormControl id="jumlahKuantiti">
+                    <FormLabel>Jumlah Kuantiti</FormLabel>
+                    <Input type="number" />
+                </FormControl>
+
+                <FormControl id="ukuranKuantiti">
+                    <FormLabel>Ukuran Kuantiti</FormLabel>
+                    <Input type="number" />
+                </FormControl>
+
+                <FormControl id="nilaiPerolehanHarta">
+                    <FormLabel>Nilai Perolehan Harta</FormLabel>
+                    <Input type="number" />
+                </FormControl>
+
+                <FormControl id="anggaranNilaiSemasa">
+                    <FormLabel>Anggaran Nilai Semasa</FormLabel>
+                    <Input type="number" />
+                </FormControl>
+
+                <FormControl id="keteranganLain">
+                    <FormLabel>Keterangan Lain (Jika Ada)</FormLabel>
+                    <Input type="text" />
+                </FormControl>
+
+                <FormControl id="caraDiperolehi">
+                    <FormLabel>Cara Diperolehi</FormLabel>
+                    <Select>
+                        <option value="belian">Belian</option>
+                        <option value="hadiah">Hadiah</option>
+                        <option value="warisan">Warisan</option>
+                        <option value="lain">Lain-lain</option>
+                    </Select>
+                </FormControl>
+
+                <Button colorScheme="red" mt={5}>
+                    Tambah
+                </Button>
+            </Box>
+        </VStack>
         </>
-    )
-}
+    );
+};
