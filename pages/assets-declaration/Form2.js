@@ -5,7 +5,7 @@ import {
     FormLabel,
     Select,
     GridItem, Input,
-    Flex, Table, Thead, Tbody, Tr, Th, Td, TableCaption, Spacer, Box,
+    Flex, Table, Thead, Tbody, Tr, Th, Td, TableCaption, Spacer, Box, Button,
 } from '@chakra-ui/react'
 import React from "react";
 
@@ -141,6 +141,9 @@ export const Form2 = () => {
                     rounded="md"
                 />
             </FormControl>
+            <Button colorScheme="red" mt={5}>
+                Tambah
+            </Button>
 
         </>
     )

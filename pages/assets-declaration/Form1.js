@@ -1,5 +1,6 @@
 // Form1.js
 import { useState } from 'react'
+import axios from 'axios' // You'll need to install this package
 import {
     Heading,
     Flex,
@@ -30,6 +31,29 @@ export const Form1 = () => {
     const [value, setValue] = useState('1')
     const [show, setShow] = useState(false)
     const handleClick = () => setShow(!show)
+    const [formState, setFormState] = useState({
+        jenisPerisytaharan: '',
+        noFail: '',
+        namaPasangan: '',
+        kategoriPerisytiharan: '',
+    })
+    const handleChange = (e) => {
+        setFormState({
+            ...formState,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            const response = await axios.post('/api/records', formState)
+            console.log(response.data)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
 
     return (
         <>
@@ -72,24 +96,25 @@ export const Form1 = () => {
                     </Tfoot>
                 </Table>
             </TableContainer>
+            <form onSubmit={handleSubmit}>
 
             <Flex>
-                <FormControl mr="5%">
-                    <FormLabel htmlFor="jenis-isytihar" fontWeight={"normal"}>
-                        Jenis Perisytaharan
-                    </FormLabel>
-                    <Select id="jenis-isytihar">
-                        <option value="option1">Option 1</option>
-                        <option value="option2">Option 2</option>
-                    </Select>
-                </FormControl>
+                    <FormControl mr="5%">
+                        <FormLabel htmlFor="jenis-isytihar" fontWeight={"normal"}>
+                            Jenis Perisytaharan
+                        </FormLabel>
+                        <Select id="jenis-isytihar" name="jenisPerisytaharan" onChange={handleChange}>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </Select>
+                    </FormControl>
 
-                <FormControl>
-                    <FormLabel htmlFor="no-fail" fontWeight={"normal"}>
-                        No fail
-                    </FormLabel>
-                    <Input id="no-fail" placeholder="No fail" />
-                </FormControl>
+                    <FormControl>
+                        <FormLabel htmlFor="no-fail" fontWeight={"normal"}>
+                            No fail
+                        </FormLabel>
+                        <Input id="no-fail" name="noFail" placeholder="No fail" onChange={handleChange} />
+                    </FormControl>
             </Flex>
 
             <FormControl mt="2%">
@@ -112,6 +137,8 @@ export const Form1 = () => {
                     </Stack>
                 </RadioGroup>
             </FormControl>
+            <Button type="submit">Submit</Button>
+        </form>
         </>
     )
 }
