@@ -1,4 +1,4 @@
-// pages/api/submitForm2.js
+// pages/api/submitMonthlySalary.js
 import connection from '@/db'
 
 // eslint-disable-next-line import/no-anonymous-default-export

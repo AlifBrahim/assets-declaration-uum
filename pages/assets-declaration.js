@@ -1,10 +1,9 @@
 // @/components/DummyPage.js
-'use client'
-import {Form2} from "@/pages/assets-declaration/Form2";
-import {Form3} from "@/pages/assets-declaration/Form3";
+import {MonthlySalaryForm} from "@/pages/assets-declaration/monthly-salary-form";
+import {MaklumatHartaForm} from "@/pages/assets-declaration/maklumat-harta-form";
 import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
 
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import {
     Progress,
     Box,
@@ -28,8 +27,10 @@ import {
 import { useToast } from '@chakra-ui/react'
 import React from 'react'
 import Layout from 'components/Layout'
-export default function Multistep() {
-    const toast = useToast()
+import {signIn, useSession} from "next-auth/react";
+import {useRouter} from "next/router";
+function AuthenticatedContent() {
+    const toast = useToast(); // Moved to the top
     const [step, setStep] = useState(1)
     const [progress, setProgress] = useState(33.33)
 
@@ -40,7 +41,6 @@ export default function Multistep() {
     };
 
     return (
-        <Layout pageTitle='Asset Declaration'>
             <Box
                 borderWidth="1px"
                 rounded="lg"
@@ -62,7 +62,7 @@ export default function Multistep() {
                                     <AccordionIcon />
                                 </AccordionButton>
                                 <AccordionPanel>
-                                    <Form2 />
+                                    <MonthlySalaryForm />
                                 </AccordionPanel>
                             </AccordionItem>
                             <AccordionItem>
@@ -73,7 +73,7 @@ export default function Multistep() {
                                     <AccordionIcon />
                                 </AccordionButton>
                                 <AccordionPanel>
-                                    <Form3 />
+                                    <MaklumatHartaForm />
                                 </AccordionPanel>
                             </AccordionItem>
                         </Accordion>
@@ -86,7 +86,7 @@ export default function Multistep() {
                                 mx="5%"
                                 isAnimated
                             ></Progress>
-                            {step === 1 ? <Form2 /> : <Form3 />}
+                            {step === 1 ? <MonthlySalaryForm /> : <MaklumatHartaForm />}
                             <ButtonGroup mt="5%" w="100%">
                                 <Flex w="100%" justifyContent="space-between">
                                     <Flex>
@@ -142,6 +142,29 @@ export default function Multistep() {
                             </ButtonGroup>
             </div>
         </Box>
-</Layout>
 );
+}
+
+export default function Multistep() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (status === "loading") return; // Do nothing while loading
+        if (!session) signIn(); // If not authenticated, force log in
+    }, [session, status]);
+
+    if (status === "loading") {
+        return <p>Loading...</p>;
+    }
+
+    if (!session) {
+        return <p>Redirecting...</p>; // Show a redirecting message or a spinner
+    }
+
+    return (
+        <Layout pageTitle='Asset Declaration'>
+            <AuthenticatedContent />
+        </Layout>
+    );
 }

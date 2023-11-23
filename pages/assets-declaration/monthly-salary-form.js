@@ -1,4 +1,4 @@
-// Form2.js
+// monthly-salary-form.js
 import {
     Heading,
     FormControl,
@@ -7,16 +7,30 @@ import {
     GridItem, Input,
     Flex, Table, Thead, Tbody, Tr, Th, Td, TableCaption, Spacer, Box, Button,
 } from '@chakra-ui/react'
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-export const Form2 = () => {
-    console.log('Entering Form2.js');
+
+export const MonthlySalaryForm = () => {
+    console.log('Entering monthly-salary-form.js');
+
+    const [data, setData] = useState([]);
+
+    const fetchData = async () => {
+        const response = await fetch('/api/getMonthlyIncome');
+        const responseData = await response.json();
+        setData(responseData);
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
     const handleSubmit = async (event) => {
         console.log('Form submitted');
         event.preventDefault();
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData);
-        const response = await fetch('/api/submitForm2', {
+        const response = await fetch('/api/submitMonthlySalary', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -26,8 +40,12 @@ export const Form2 = () => {
         const responseData = await response.json();
         console.log(responseData);
         alert("Successlah!");
-    };
 
+        // Refresh the data
+        fetchData();
+        // reset the fields
+        event.target.reset();
+    };
     return (
         <React.Fragment>
             <Heading w="100%" textAlign={"center"} fontWeight="normal" mb="2%">
@@ -48,7 +66,13 @@ export const Form2 = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {/* Your rows for the first table go here */}
+                            {data.filter(item => item.category === 'pegawai').map((item, index) => (
+                                <Tr key={index}>
+                                    <Td>{index + 1}</Td>
+                                    <Td>{item.description}</Td>
+                                    <Td>{item.amount}</Td>
+                                </Tr>
+                            ))}
                         </Tbody>
                     </Table>
                 </Box>
@@ -68,7 +92,13 @@ export const Form2 = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {/* Your rows for the second table go here */}
+                            {data.filter(item => item.category === 'suami_isteri').map((item, index) => (
+                                <Tr key={index}>
+                                    <Td>{index + 1}</Td>
+                                    <Td>{item.description}</Td>
+                                    <Td>{item.amount}</Td>
+                                </Tr>
+                            ))}
                         </Tbody>
                     </Table>
                 </Box>
@@ -87,7 +117,13 @@ export const Form2 = () => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {/* Your rows for the first table go here */}
+                        {data.filter(item => item.category === 'lain_lain').map((item, index) => (
+                            <Tr key={index}>
+                                <Td>{index + 1}</Td>
+                                <Td>{item.description}</Td>
+                                <Td>{item.amount}</Td>
+                            </Tr>
+                        ))}
                     </Tbody>
                 </Table>
             </Box>
@@ -113,8 +149,8 @@ export const Form2 = () => {
                 </Input>
             </FormControl>
                 <FormControl>
-                    <FormLabel htmlFor="category" fontSize="sm" fontWeight="md" color="gray.700" _dark={{color: "gray.50"}}>Category</FormLabel>
-                    <Select id="category" name="category" placeholder="Category">
+                    <FormLabel htmlFor="category" fontSize="sm" fontWeight="md" color="gray.700" _dark={{color: "gray.50"}}>Kategori</FormLabel>
+                    <Select id="category" name="category" placeholder="Kategori">
                         <option value="pegawai">Pegawai</option>
                         <option value="suami_isteri">Suami/Isteri</option>
                         <option value="lain_lain">Lain-lain pendapatan</option>
@@ -145,10 +181,9 @@ export const Form2 = () => {
                     rounded="md"
                 />
             </FormControl>
-            <Button colorScheme="red" mt={5}>
+            <Button type="submit" colorScheme="red" mt={5}>
                 Tambah
             </Button>
-                <button type="submit">Submit</button>
             </form>
 
         </React.Fragment>
