@@ -10,8 +10,26 @@ import {
 import React from "react";
 
 export const Form2 = () => {
+    console.log('Entering Form2.js');
+    const handleSubmit = async (event) => {
+        console.log('Form submitted');
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData);
+        const response = await fetch('/api/submitForm2', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        });
+        const responseData = await response.json();
+        console.log(responseData);
+        alert("Successlah!");
+    };
+
     return (
-        <>
+        <React.Fragment>
             <Heading w="100%" textAlign={"center"} fontWeight="normal" mb="2%">
                 Pendapatan Bulanan
             </Heading>
@@ -74,6 +92,7 @@ export const Form2 = () => {
                 </Table>
             </Box>
             <br/>
+            <form onSubmit={handleSubmit}>
             <FormControl>
                 <FormLabel
                     htmlFor="keterangan"
@@ -93,29 +112,14 @@ export const Form2 = () => {
                 >
                 </Input>
             </FormControl>
-
-            <FormControl as={GridItem} colSpan={6}>
-                <FormLabel
-                    htmlFor="salary_jenis"
-                    fontSize="sm"
-                    fontWeight="md"
-                    color="gray.700"
-                    _dark={{
-                        color: "gray.50"
-                    }}
-                    mt="2%"
-                >
-                    Jenis
-                </FormLabel>
-                <Select
-                    id="salary_jenis"
-                    name="salary_jenis"
-                    placeholder="Jenis"
-                >
-                    <option value="option1">Option 1</option>
-                    <option value="option2">Option 2</option>
-                </Select>
-            </FormControl>
+                <FormControl>
+                    <FormLabel htmlFor="category" fontSize="sm" fontWeight="md" color="gray.700" _dark={{color: "gray.50"}}>Category</FormLabel>
+                    <Select id="category" name="category" placeholder="Category">
+                        <option value="pegawai">Pegawai</option>
+                        <option value="suami_isteri">Suami/Isteri</option>
+                        <option value="lain_lain">Lain-lain pendapatan</option>
+                    </Select>
+                </FormControl>
 
             <FormControl as={GridItem} colSpan={[6, 6, null, 2]}>
                 <FormLabel
@@ -144,7 +148,9 @@ export const Form2 = () => {
             <Button colorScheme="red" mt={5}>
                 Tambah
             </Button>
+                <button type="submit">Submit</button>
+            </form>
 
-        </>
+        </React.Fragment>
     )
 }

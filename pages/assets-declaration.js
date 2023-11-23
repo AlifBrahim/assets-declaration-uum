@@ -1,6 +1,5 @@
 // @/components/DummyPage.js
 'use client'
-import {Form1} from "@/pages/assets-declaration/Form1";
 import {Form2} from "@/pages/assets-declaration/Form2";
 import {Form3} from "@/pages/assets-declaration/Form3";
 import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
@@ -41,35 +40,21 @@ export default function Multistep() {
     };
 
     return (
-        <>
-            <Layout pageTitle='Asset Declaration'>
-                <Box
-                    borderWidth="1px"
-                    rounded="lg"
-                    shadow="1px 1px 3px rgba(0,0,0,0.3)"
-                    maxWidth={800}
-                    p={6}
-                    m="10px auto"
-                    as="form"
-                >
-                    <Button onClick={toggleView} mb={4}>
-                        {isAccordionView ? "Switch to Progress Bar View" : "Switch to Accordion View"}
-                    </Button>
+        <Layout pageTitle='Asset Declaration'>
+            <Box
+                borderWidth="1px"
+                rounded="lg"
+                shadow="1px 1px 3px rgba(0,0,0,0.3)"
+                maxWidth={800}
+                p={6}
+                m="10px auto"
+            >
+                <Button onClick={toggleView} mb={4}>
+                    {isAccordionView ? "Switch to Progress Bar View" : "Switch to Accordion View"}
+                </Button>
 
-
-                    {isAccordionView ? (
+                <div style={{ display: isAccordionView ? 'block' : 'none' }}>
                         <Accordion allowToggle>
-                            <AccordionItem>
-                                <AccordionButton>
-                                    <Box flex="1" textAlign="left">
-                                        Perisytiharan Harta
-                                    </Box>
-                                    <AccordionIcon />
-                                </AccordionButton>
-                                <AccordionPanel>
-                                    <Form1 />
-                                </AccordionPanel>
-                            </AccordionItem>
                             <AccordionItem>
                                 <AccordionButton>
                                     <Box flex="1" textAlign="left">
@@ -92,8 +77,8 @@ export default function Multistep() {
                                 </AccordionPanel>
                             </AccordionItem>
                         </Accordion>
-                    ) : (
-                        <>
+                </div>
+                <div style={{ display: isAccordionView ? 'none' : 'block' }}>
                             <Progress
                                 hasStripe
                                 value={progress}
@@ -101,7 +86,7 @@ export default function Multistep() {
                                 mx="5%"
                                 isAnimated
                             ></Progress>
-                            {step === 1 ? <Form1 /> : step === 2 ? <Form2 /> : <Form3 />}
+                            {step === 1 ? <Form2 /> : <Form3 />}
                             <ButtonGroup mt="5%" w="100%">
                                 <Flex w="100%" justifyContent="space-between">
                                     <Flex>
@@ -155,10 +140,8 @@ export default function Multistep() {
                                     ) : null}
                                 </Flex>
                             </ButtonGroup>
-                        </>
-                    )}
-                </Box>
-            </Layout>
-        </>
-    );
+            </div>
+        </Box>
+</Layout>
+);
 }
