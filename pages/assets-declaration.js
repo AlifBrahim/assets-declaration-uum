@@ -1,6 +1,6 @@
 // @/components/DummyPage.js
-import {MonthlySalaryForm} from "@/pages/assets-declaration/monthly-salary-form";
-import {MaklumatHartaForm} from "@/pages/assets-declaration/maklumat-harta-form";
+import {MonthlySalaryForm} from "@/pages/assets-declaration/monthly-salary";
+import {MaklumatHartaForm} from "@/pages/assets-declaration/maklumat-harta";
 import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
 
 import {useEffect, useState} from 'react'
@@ -11,17 +11,6 @@ import {
     Button,
     Heading,
     Flex,
-    FormControl,
-    GridItem,
-    FormLabel,
-    Input,
-    Select,
-    SimpleGrid,
-    InputLeftAddon,
-    InputGroup,
-    Textarea,
-    FormHelperText,
-    InputRightElement,
 } from '@chakra-ui/react'
 
 import { useToast } from '@chakra-ui/react'
@@ -41,108 +30,108 @@ function AuthenticatedContent() {
     };
 
     return (
-            <Box
-                borderWidth="1px"
-                rounded="lg"
-                shadow="1px 1px 3px rgba(0,0,0,0.3)"
-                maxWidth={800}
-                p={6}
-                m="10px auto"
-            >
-                <Button onClick={toggleView} mb={4}>
-                    {isAccordionView ? "Switch to Progress Bar View" : "Switch to Accordion View"}
-                </Button>
+        <Box
+            borderWidth="1px"
+            rounded="lg"
+            shadow="1px 1px 3px rgba(0,0,0,0.3)"
+            maxWidth={800}
+            p={6}
+            m="10px auto"
+        >
+            <Button onClick={toggleView} mb={4}>
+                {isAccordionView ? "Switch to Progress Bar View" : "Switch to Accordion View"}
+            </Button>
 
-                <div style={{ display: isAccordionView ? 'block' : 'none' }}>
-                        <Accordion allowToggle>
-                            <AccordionItem>
-                                <AccordionButton>
-                                    <Box flex="1" textAlign="left">
-                                        Pendapatan Bulanan                                    </Box>
-                                    <AccordionIcon />
-                                </AccordionButton>
-                                <AccordionPanel>
-                                    <MonthlySalaryForm />
-                                </AccordionPanel>
-                            </AccordionItem>
-                            <AccordionItem>
-                                <AccordionButton>
-                                    <Box flex="1" textAlign="left">
-                                        Maklumat Harta
-                                    </Box>
-                                    <AccordionIcon />
-                                </AccordionButton>
-                                <AccordionPanel>
-                                    <MaklumatHartaForm />
-                                </AccordionPanel>
-                            </AccordionItem>
-                        </Accordion>
-                </div>
-                <div style={{ display: isAccordionView ? 'none' : 'block' }}>
-                            <Progress
-                                hasStripe
-                                value={progress}
-                                mb="5%"
-                                mx="5%"
-                                isAnimated
-                            ></Progress>
-                            {step === 1 ? <MonthlySalaryForm /> : <MaklumatHartaForm />}
-                            <ButtonGroup mt="5%" w="100%">
-                                <Flex w="100%" justifyContent="space-between">
-                                    <Flex>
-                                        <Button
-                                            onClick={() => {
-                                                setStep(step - 1)
-                                                setProgress(progress - 33.33)
-                                            }}
-                                            isDisabled={step === 1}
-                                            colorScheme="teal"
-                                            variant="solid"
-                                            w="7rem"
-                                            mr="5%"
-                                        >
-                                            Back
-                                        </Button>
-                                        <Button
-                                            w="7rem"
-                                            isDisabled={step === 3}
-                                            onClick={() => {
-                                                setStep(step + 1)
-                                                if (step === 3) {
-                                                    setProgress(100)
-                                                } else {
-                                                    setProgress(progress + 33.33)
-                                                }
-                                            }}
-                                            colorScheme="teal"
-                                            variant="outline"
-                                        >
-                                            Next
-                                        </Button>
-                                    </Flex>
-                                    {step === 3 ? (
-                                        <Button
-                                            w="7rem"
-                                            colorScheme="red"
-                                            variant="solid"
-                                            onClick={() => {
-                                                toast({
-                                                    title: "Account created.",
-                                                    description: "We've created your account for you.",
-                                                    status: "success",
-                                                    duration: 3000,
-                                                    isClosable: true
-                                                })
-                                            }}
-                                        >
-                                            Submit
-                                        </Button>
-                                    ) : null}
-                                </Flex>
-                            </ButtonGroup>
+            <div style={{ display: isAccordionView ? 'block' : 'none' }}>
+                <Accordion allowToggle>
+                    <AccordionItem>
+                        <AccordionButton>
+                            <Box flex="1" textAlign="left">
+                                Pendapatan Bulanan                                    </Box>
+                            <AccordionIcon />
+                        </AccordionButton>
+                        <AccordionPanel>
+                            <MonthlySalaryForm />
+                        </AccordionPanel>
+                    </AccordionItem>
+                    <AccordionItem>
+                        <AccordionButton>
+                            <Box flex="1" textAlign="left">
+                                Maklumat Harta
+                            </Box>
+                            <AccordionIcon />
+                        </AccordionButton>
+                        <AccordionPanel>
+                            <MaklumatHartaForm />
+                        </AccordionPanel>
+                    </AccordionItem>
+                </Accordion>
+            </div>
+            <div style={{ display: isAccordionView ? 'none' : 'block' }}>
+                <Progress
+                    hasStripe
+                    value={progress}
+                    mb="5%"
+                    mx="5%"
+                    isAnimated
+                ></Progress>
+                {step === 1 ? <MonthlySalaryForm /> : <MaklumatHartaForm />}
+                <ButtonGroup mt="5%" w="100%">
+                    <Flex w="100%" justifyContent="space-between">
+                        <Flex>
+                            <Button
+                                onClick={() => {
+                                    setStep(step - 1)
+                                    setProgress(progress - 33.33)
+                                }}
+                                isDisabled={step === 1}
+                                colorScheme="teal"
+                                variant="solid"
+                                w="7rem"
+                                mr="5%"
+                            >
+                                Back
+                            </Button>
+                            <Button
+                                w="7rem"
+                                isDisabled={step === 2}
+                                onClick={() => {
+                                    setStep(step + 1)
+                                    if (step === 3) {
+                                        setProgress(100)
+                                    } else {
+                                        setProgress(progress + 33.33)
+                                    }
+                                }}
+                                colorScheme="teal"
+                                variant="outline"
+                            >
+                                Next
+                            </Button>
+                        </Flex>
+                        {step === 2 ? (
+                            <Button
+                                w="7rem"
+                                colorScheme="red"
+                                variant="solid"
+                                onClick={() => {
+                                    toast({
+                                        title: "Account created.",
+                                        description: "We've created your account for you.",
+                                        status: "success",
+                                        duration: 3000,
+                                        isClosable: true
+                                    })
+                                }}
+                            >
+                                Submit
+                            </Button>
+                        ) : null}
+                    </Flex>
+                </ButtonGroup>
             </div>
         </Box>
-);
+    );
 }
 
 export default function Multistep() {

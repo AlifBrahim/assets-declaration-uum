@@ -71,8 +71,8 @@ export default function Sidebar({ show, setter }) {
                         icon={<FaTshirt />}
                     />
                     <MenuItem
-                        name="Hats"
-                        route="/hats"
+                        name="View Assets"
+                        route="/view-assets"
                         icon={<FaRedhat />}
                     />
                     <MenuItem

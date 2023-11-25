@@ -10,7 +10,7 @@ export default function Header({ title }) {
             <h1 className="mx-auto">{title}</h1>
             <Link
                 className="text-3xl text-white"
-                href="/login"
+                href="/profile"
             >
                 <FaUser />
             </Link>
