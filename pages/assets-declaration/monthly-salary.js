@@ -10,13 +10,14 @@ import {
     Select,
     useToast
 } from '@chakra-ui/react'
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import TableComponent from './monthly-salary-table';
 import FormComponent from './monthly-salary-form';
+import axios from "axios";
 
 export const MonthlySalaryForm = () => {
     console.log('Entering monthly-salary-form.js');
-
+    const filePondRef = useRef();
     const [data, setData] = useState([]);
     const toast = useToast();
 
@@ -26,8 +27,13 @@ export const MonthlySalaryForm = () => {
         setData(responseData);
     };
 
+    // Add this outside the form submit handler
     useEffect(() => {
         fetchData();
+        const fileInput = document.querySelector('#proof');
+        fileInput.addEventListener('change', (event) => {
+            console.log(event.target.files[0]);
+        });
     }, []);
 
     const handleSubmit = async (event) => {
@@ -35,23 +41,38 @@ export const MonthlySalaryForm = () => {
         event.preventDefault();
         const formData = new FormData(event.target);
 
-        const response = await fetch('/api/submitMonthlySalary', {
-            method: 'POST',
-            body: formData,
-        });
-        const responseData = await response.json();
-        console.log(responseData);
-        // In your form submit handler
-        const fileInput = document.querySelector('#proof');
-        console.log(fileInput.files[0]);
-        fileInput.addEventListener('change', (event) => {
-            console.log(event.target.files[0]);
-        });
+
+
+        console.log(filePondRef.current)
+        console.log(filePondRef.current.getFiles())
+        // Get the file data from the FilePond instance
+        const file = filePondRef.current.getFiles()[0].file;
+        console.log('File:', file);
+        formData.append('proof', file);
+
+        // Log the form data
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
+
+        console.log('Sending request to server');
+        try {
+            const response = await axios.post('/api/submitMonthlySalary', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log('Server response:', response.data);
+        } catch (error) {
+            console.error('Error during fetch:', error);
+        }
 
         // Refresh the data
-        fetchData();
+        await fetchData();
         // reset the fields
         event.target.reset();
+        // Reset the FilePond instance
+        filePondRef.current.removeFiles();
 
 
         toast({
@@ -62,6 +83,7 @@ export const MonthlySalaryForm = () => {
             isClosable: true
         })
     };
+
 
 
     return (
@@ -89,7 +111,7 @@ export const MonthlySalaryForm = () => {
                 title='Lain-lain pendapatan'
             />
             <br/>
-            <FormComponent onSubmit={handleSubmit} />
+            <FormComponent onSubmit={handleSubmit} filePondRef={filePondRef} />
         </React.Fragment>
     )
 }

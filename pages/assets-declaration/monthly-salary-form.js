@@ -1,9 +1,12 @@
 // FormComponent.js
 import { Button, FormControl, FormLabel, GridItem, Input, Select } from '@chakra-ui/react';
+import { FilePond, registerPlugin } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
+import React, { useRef } from 'react';
 
-const FormComponent = ({ onSubmit }) => (
+const FormComponent = ({ onSubmit, filePondRef }) => (
     <form onSubmit={onSubmit} encType="multipart/form-data">
-        <FormControl>
+        <FormControl isRequired>
             <FormLabel
                 htmlFor="keterangan"
                 fontSize="sm"
@@ -19,18 +22,20 @@ const FormComponent = ({ onSubmit }) => (
                 id='keterangan'
                 name='keterangan'
                 placeholder='Keterangan'
+                required
             />
         </FormControl>
-        <FormControl>
-            <FormLabel htmlFor="category" fontSize="sm" fontWeight="md" color="gray.700" _dark={{color: "gray.50"}}>Kategori</FormLabel>
-            <Select id="category" name="category" placeholder="Kategori">
+        <FormControl isRequired>
+            <FormLabel htmlFor="category" fontSize="sm" fontWeight="md" color="gray.700"
+                       _dark={{color: "gray.50"}}>Kategori</FormLabel>
+            <Select id="category" name="category" placeholder="Kategori" required>
                 <option value="pegawai">Pegawai</option>
                 <option value="suami_isteri">Suami/Isteri</option>
                 <option value="lain_lain">Lain-lain pendapatan</option>
             </Select>
         </FormControl>
 
-        <FormControl as={GridItem} colSpan={[6, 6, null, 2]}>
+        <FormControl as={GridItem} colSpan={[6, 6, null, 2]} isRequired>
             <FormLabel
                 htmlFor="salary_jumlah"
                 fontSize="sm"
@@ -52,17 +57,18 @@ const FormComponent = ({ onSubmit }) => (
                 size="sm"
                 w="full"
                 rounded="md"
+                required
             />
         </FormControl>
         <br/>
         <FormControl>
             <FormLabel htmlFor="proof"  fontWeight="md" color="gray.700" _dark={{color: "gray.50"}}>Bukti</FormLabel>
-            <Input type="file" id="proof" name="proof" />
+            <FilePond name="proof" id="proof" ref={filePondRef} />
         </FormControl>
         <Button type="submit" colorScheme="red" mt={5}>
             Tambah
         </Button>
     </form>
 );
-
 export default FormComponent;
+
