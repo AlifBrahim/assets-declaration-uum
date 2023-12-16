@@ -2,6 +2,7 @@ import connection from '@/db'
 import fs from 'fs'
 import path from 'path'
 import multer from 'multer'
+import { getSession } from 'next-auth/react';
 
 // Configure multer
 const upload = multer({ dest: 'uploads/' });
@@ -13,6 +14,8 @@ export const config = {
 };
 
 export default async (req, res) => {
+    const session = await getSession({ req });
+    const email = session.user.email;
     console.log('Received request');
     if (req.method === 'POST') {
         console.log('Request method: POST')
@@ -30,17 +33,23 @@ export default async (req, res) => {
             const {category, keterangan, salary_jumlah} = req.body;
             const proof = req.files.find(file => file.fieldname === 'proof');
 
-            // Save the file to the server
-            const filePath = path.join('C:\\Users\\DELL\\WebstormProjects\\assets-declaration-uum\\uploads', proof.originalname)
-            fs.writeFileSync(filePath, fs.readFileSync(proof.path))
+            let filePath;
+            // Check if a file has been uploaded
+            if (proof) {
+                // Save the file to the server
+                filePath = path.join('C:\\Users\\DELL\\WebstormProjects\\assets-declaration-uum\\public\\uploads', proof.originalname)
+                fs.writeFileSync(filePath, fs.readFileSync(proof.path))
+            } else {
+                console.log('No file uploaded');
+            }
+
 
             console.log('Inserting data into database');
             await new Promise((resolve, reject) => {
-                connection.query('INSERT INTO MonthlyIncome (category, description, amount, proof) VALUES (?, ?, ?, ?)', [category, keterangan, salary_jumlah, filePath], (error, results) => {
-                    if (error) {
-                        console.error('Database error:', error);
-                        reject(error);
-                    }
+                connection.query('INSERT INTO MonthlyIncome (email, category, description, amount, proof) VALUES (?, ?, ?, ?, ?)', [email, category, keterangan, salary_jumlah, filePath], (error, results) => {                    if (error) {
+                    console.error('Database error:', error);
+                    reject(error);
+                }
                     console.log('Data inserted successfully');
                     resolve(results);
                 });

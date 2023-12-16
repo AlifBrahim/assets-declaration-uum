@@ -1,5 +1,6 @@
 import { Box, Heading, Table, Tbody, Td, Th, Thead, Tr, Skeleton } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
+import path from 'path'; // Import the path module
 
 const TableComponent = ({ data, title }) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +23,7 @@ const TableComponent = ({ data, title }) => {
                             <Th>BIL</Th>
                             <Th>KETERANGAN</Th>
                             <Th>AMAUN</Th>
+                            <Th>BUKTI</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -30,6 +32,7 @@ const TableComponent = ({ data, title }) => {
                                 <Td>{index + 1}</Td>
                                 <Td>{item.description}</Td>
                                 <Td>{item.amount}</Td>
+                                <Td>{item.proof ? <a href={"/" + path.basename(item.proof)} target="_blank" rel="noopener noreferrer">{path.basename(item.proof)}</a> : ''}</Td>
                             </Tr>
                         ))}
                     </Tbody>

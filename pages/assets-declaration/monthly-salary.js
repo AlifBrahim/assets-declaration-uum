@@ -41,14 +41,17 @@ export const MonthlySalaryForm = () => {
         event.preventDefault();
         const formData = new FormData(event.target);
 
-
-
         console.log(filePondRef.current)
         console.log(filePondRef.current.getFiles())
-        // Get the file data from the FilePond instance
-        const file = filePondRef.current.getFiles()[0].file;
-        console.log('File:', file);
-        formData.append('proof', file);
+        // Check if a file has been uploaded
+        if (filePondRef.current.getFiles().length > 0) {
+            // Get the file data from the FilePond instance
+            const file = filePondRef.current.getFiles()[0].file;
+            console.log('File:', file);
+            formData.append('proof', file);
+        } else {
+            console.log('No file uploaded');
+        }
 
         // Log the form data
         for (var pair of formData.entries()) {
