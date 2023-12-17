@@ -118,3 +118,5 @@ export const MonthlySalaryForm = () => {
         </React.Fragment>
     )
 }
+export default MonthlySalaryForm;
+

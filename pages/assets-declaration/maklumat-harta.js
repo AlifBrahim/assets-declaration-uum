@@ -233,3 +233,4 @@ export const MaklumatHartaForm = () => {
         </>
     );
 };
+export default MaklumatHartaForm;
