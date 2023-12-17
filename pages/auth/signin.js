@@ -23,7 +23,7 @@ const Signin = ({ providers }) => {
                 <div className={styles.cardWrapper}>
                     <Image src='/toastmasters-international-logo-vector.svg' width="1000" height="400" alt='App Logo' style={{ height: '200px', marginBottom: '10px' }} />
                     <div className={styles.cardContent}>
-                        <div>{"Cyberjaya Toastmasters Speech & Role Booking"}</div>
+                        <div>{"UUM Assets Declaration"}</div>
                         <hr/>
                         {providers &&
                             Object.values(providers).map(provider => (
