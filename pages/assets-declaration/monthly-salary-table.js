@@ -27,14 +27,14 @@ const TableComponent = ({ data, title }) => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {data.map((item, index) => (
+                        {data ? data.map((item, index) => (
                             <Tr key={index}>
                                 <Td>{index + 1}</Td>
                                 <Td>{item.description}</Td>
                                 <Td>{item.amount}</Td>
                                 <Td>{item.proof ? <a href={"/" + path.basename(item.proof)} target="_blank" rel="noopener noreferrer">{path.basename(item.proof)}</a> : ''}</Td>
                             </Tr>
-                        ))}
+                        )) : null}
                     </Tbody>
                 </Table>
             </Skeleton>
