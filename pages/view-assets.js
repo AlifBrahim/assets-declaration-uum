@@ -25,24 +25,25 @@ export default function ViewAssetsPage() {
                 <Box width="50px" />
                 <br/>
 
-                <Flex direction="row" justify="center" alignItems="flex-start" p={4}>
-                    {/* Wrap TableComponent in a Box with padding or margin */}
-                    <Box pl={12} pr={4}> {/* Adjust the right padding as needed */}
+                <Flex direction={{ base: "column", md: "row" }} justify="center" alignItems="flex-start" p={4}>
+                    <Box flex="1" overflowX="auto">
                         <TableComponent
                             data={data.filter(item => item.category === 'pegawai')}
                             title='Pegawai'
                         />
                     </Box>
 
-                    <Box width="50px" />
+                    {/* Adjust the Box width to be responsive */}
+                    <Box width={{ base: "0", md: "50px" }} />
 
-                    <Center>
+                    <Box flex="1" overflowX="auto">
                         <TableComponent
                             data={data.filter(item => item.category === 'suami_isteri')}
                             title='Suami/Isteri'
                         />
-                    </Center>
+                    </Box>
                 </Flex>
+
 
 
                 <br/>
