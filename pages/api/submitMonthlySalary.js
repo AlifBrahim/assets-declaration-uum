@@ -33,12 +33,12 @@ export default async (req, res) => {
             const {category, keterangan, salary_jumlah} = req.body;
             const proof = req.files.find(file => file.fieldname === 'proof');
 
-            let filePath;
-            // Check if a file has been uploaded
+            let relativeFilePath;
             if (proof) {
-                // Save the file to the server
-                filePath = path.join('C:\\Users\\DELL\\WebstormProjects\\assets-declaration-uum\\public\\uploads', proof.originalname)
-                fs.writeFileSync(filePath, fs.readFileSync(proof.path))
+                relativeFilePath = path.join('uploads', proof.originalname);
+                const filePath = path.join(process.cwd(), 'public', relativeFilePath);
+                fs.writeFileSync(filePath, fs.readFileSync(proof.path));
+                fs.unlinkSync(proof.path); // Remove the file from the temporary directory
             } else {
                 console.log('No file uploaded');
             }
@@ -46,7 +46,8 @@ export default async (req, res) => {
 
             console.log('Inserting data into database');
             await new Promise((resolve, reject) => {
-                connection.query('INSERT INTO MonthlyIncome (email, category, description, amount, proof) VALUES (?, ?, ?, ?, ?)', [email, category, keterangan, salary_jumlah, filePath], (error, results) => {                    if (error) {
+                connection.query('INSERT INTO MonthlyIncome (email, category, description, amount, proof) VALUES (?, ?, ?, ?, ?)', [email, category, keterangan, salary_jumlah, relativeFilePath], (error, results) => {
+                    if (error) {
                     console.error('Database error:', error);
                     reject(error);
                 }

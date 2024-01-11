@@ -37,6 +37,8 @@ function AuthenticatedContent() {
             maxWidth={800}
             p={6}
             m="10px auto"
+            overflowY="auto" // Enable vertical scrolling
+            maxHeight="500px" // Set a maximum height
         >
             <Button onClick={toggleView} mb={4}>
                 {isAccordionView ? "Switch to Progress Bar View" : "Switch to Accordion View"}

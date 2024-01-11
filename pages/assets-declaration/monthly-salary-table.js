@@ -32,7 +32,13 @@ const TableComponent = ({ data, title }) => {
                                 <Td>{index + 1}</Td>
                                 <Td>{item.description}</Td>
                                 <Td>{item.amount}</Td>
-                                <Td>{item.proof ? <a href={"/" + path.basename(item.proof)} target="_blank" rel="noopener noreferrer">{path.basename(item.proof)}</a> : ''}</Td>
+                                <Td>
+                                    {item.proof ? (
+                                        <a href={`/${encodeURIComponent(item.proof)}`} target="_blank" rel="noopener noreferrer">
+                                            {path.basename(item.proof)}
+                                        </a>
+                                    ) : ''}
+                                </Td>
                             </Tr>
                         )) : null}
                     </Tbody>
