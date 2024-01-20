@@ -1,30 +1,31 @@
 import { Box, Image, Text, Link, Stack, Heading, Flex, Button, Skeleton } from "@chakra-ui/react";
 import Layout from 'components/Layout'
-import {signIn, signOut, useSession} from "next-auth/react";
+import { getAuth, signOut } from 'firebase/auth';
 import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
 
 export default function Profile() {
-    const { data: session, status } = useSession();
+    const auth = getAuth();
+    const user = auth.currentUser;
     const router = useRouter();
     const [isImageLoading, setIsImageLoading] = useState(true);
 
     useEffect(() => {
-        if (status === "loading") return; // Do nothing while loading
-        if (!session) signIn(); // If not authenticated, force log in
-    }, [session, status]);
+        if (!user) {
+            // User is not signed in, redirect them to the sign-in page
+            router.push('/signin');
+        }
+    }, [user, router]);
 
-    if (status === "loading") {
-        return <p>Loading...</p>;
-    }
-
-    if (!session) {
-        return <p>Redirecting...</p>; // Show a redirecting message or a spinner
-    }
 
     const handleLogout = () => {
-        // Add your logout logic here
-        signOut();
+        signOut(auth).then(() => {
+            // Sign-out successful, redirect to sign-in page
+            router.push('/signin');
+        }).catch((error) => {
+            // An error happened during sign out
+            console.error('Error signing out:', error);
+        });
     };
 
     return (
@@ -37,7 +38,7 @@ export default function Profile() {
 
                     <Box p="6">
                         <Box d="flex" alignItems="baseline">
-                            <Heading size="lg">{session.user.name}</Heading>
+                            <Heading size="lg">{user.displayName}</Heading>
                             <Box
                                 color="gray.500"
                                 fontWeight="semibold"
@@ -50,7 +51,7 @@ export default function Profile() {
                             </Box>
                         </Box>
 
-                        <Text mt="2">Hi, I'm {session.user.name} and I'm an Engineer & Designer, Designer at heart.
+                        <Text mt="2">Hi, I'm {user.displayName} and I'm an Engineer & Designer, Designer at heart.
                             I love the design field and have been working with many people across the world to move away from different design paradigms.
                             My design journey started in 2012, and since then I have collaborated with clients like Google, Kik, and more.
                             I have created templates and design processes for</Text>

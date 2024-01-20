@@ -9,15 +9,33 @@ import {
     Skeleton,
     Flex, Table, Thead, Tbody, Tr, Th, Td, TableCaption, Spacer, Heading, Select, useToast
 } from "@chakra-ui/react";
+import {getAuth} from "firebase/auth";
 export const HartaTable = ({ refreshKey }) => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchData = async () => {
         setIsLoading(true);
-        const response = await fetch('/api/getAssetInformation');
-        const responseData = await response.json();
-        setData(responseData);
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+            const idToken = await user.getIdToken();
+            const response = await fetch('/api/getAssetInformation', {
+                headers: {
+                    'Authorization': `Bearer ${idToken}`,
+                },
+            });
+            if (response.ok) {
+                const responseData = await response.json();
+                setData(responseData);
+            } else {
+                console.error('Error fetching data:', response.statusText);
+                // Handle errors here, such as displaying a message to the user
+            }
+        } else {
+            console.error('User not authenticated');
+            // Handle user not authenticated here, such as redirecting to login
+        }
         setIsLoading(false);
     };
 
@@ -175,6 +193,7 @@ const HartaForm = ({onSubmit}) => (
     </VStack>
 );
 export const MaklumatHartaForm = () => {
+    const [isLoading, setIsLoading] = useState(true);
     const toast = useToast();
 
     const [data, setData] = useState([]);
@@ -182,10 +201,30 @@ export const MaklumatHartaForm = () => {
 
 
     const fetchData = async () => {
-        const response = await fetch('/api/getAssetInformation');
-        const responseData = await response.json();
-        setData(responseData);
+        setIsLoading(true);
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+            const idToken = await user.getIdToken();
+            const response = await fetch('/api/getAssetInformation', {
+                headers: {
+                    'Authorization': `Bearer ${idToken}`,
+                },
+            });
+            if (response.ok) {
+                const responseData = await response.json();
+                setData(responseData);
+            } else {
+                console.error('Error fetching data:', response.statusText);
+                // Handle errors here, such as displaying a message to the user
+            }
+        } else {
+            console.error('User not authenticated');
+            // Handle user not authenticated here, such as redirecting to login
+        }
+        setIsLoading(false);
     };
+
 
     useEffect(() => {
         fetchData();
@@ -195,29 +234,60 @@ export const MaklumatHartaForm = () => {
         event.preventDefault();
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData);
-        const response = await fetch('/api/submitAssetInformation', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-        });
-        const responseData = await response.json();
-        console.log(responseData);
-        // Refresh the data
-        await fetchData();
-        // Trigger a refresh of HartaTable
-        setRefreshKey(refreshKey => refreshKey + 1); // Add this line
-        toast({
-            title: "Form submitted.",
-            description: "Your form has been successfully submitted.",
-            status: "success",
-            duration: 3000,
-            isClosable: true
-        })
 
-        // Clear the form
-        event.target.reset();
+        // Get the current user's ID token from Firebase
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) {
+            toast({
+                title: "Error",
+                description: "Not authenticated",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+            return;
+        }
+        const idToken = await user.getIdToken();
+
+        // Attach the Firebase ID token in the headers
+        const headers = {
+            'Authorization': idToken,
+            'Content-Type': 'application/json'
+        };
+
+        // Send the request to the server
+        try {
+            const response = await fetch('/api/submitAssetInformation', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(data),
+            });
+            const responseData = await response.json();
+            console.log(responseData);
+            // Refresh the data
+            await fetchData();
+            // Trigger a refresh of HartaTable
+            setRefreshKey(refreshKey => refreshKey + 1);
+            toast({
+                title: "Form submitted.",
+                description: "Your form has been successfully submitted.",
+                status: "success",
+                duration: 3000,
+                isClosable: true
+            });
+            // Clear the form
+            event.target.reset();
+        } catch (error) {
+            console.error('Error during fetch:', error);
+            toast({
+                title: "Error",
+                description: "Failed to submit form",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+        }
     };
 
     return (

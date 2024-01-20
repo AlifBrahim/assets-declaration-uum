@@ -16,141 +16,108 @@ import {
 import { useToast } from '@chakra-ui/react'
 import React from 'react'
 import Layout from 'components/Layout'
-import {signIn, useSession} from "next-auth/react";
+import {getAuth, onAuthStateChanged, signOut} from 'firebase/auth';
 import {useRouter} from "next/router";
+
+
 function AuthenticatedContent() {
-    const toast = useToast(); // Moved to the top
-    const [step, setStep] = useState(1)
-    const [progress, setProgress] = useState(33.33)
+    const toast = useToast();
+    const [step, setStep] = useState(1);
+    const [progress, setProgress] = useState(33.33);
 
-    const [isAccordionView, setIsAccordionView] = useState(false);
-
-    const toggleView = () => {
-        setIsAccordionView(!isAccordionView);
-    };
-
+    // Wrap the content in a Box with padding
     return (
         <Box
-            borderWidth="1px"
-            rounded="lg"
-            shadow="1px 1px 3px rgba(0,0,0,0.3)"
-            maxWidth={800}
-            p={6}
-            m="10px auto"
-            overflowY="auto" // Enable vertical scrolling
-            maxHeight="500px" // Set a maximum height
+            p={{ base: "2", md: "6" }} // Padding: 2 on base, 6 on medium screens and up
+            m={{ base: "2", md: "6" }} // Margin: 2 on base, 6 on medium screens and up
+            mx="auto" // Center horizontally
+            maxW={{ base: "xl", md: "3xl" }} // Max width: "xl" on base, "3xl" on medium screens and up
         >
-            <Button onClick={toggleView} mb={4}>
-                {isAccordionView ? "Switch to Progress Bar View" : "Switch to Accordion View"}
-            </Button>
-
-            <div style={{ display: isAccordionView ? 'block' : 'none' }}>
-                <Accordion allowToggle>
-                    <AccordionItem>
-                        <AccordionButton>
-                            <Box flex="1" textAlign="left">
-                                Pendapatan Bulanan                                    </Box>
-                            <AccordionIcon />
-                        </AccordionButton>
-                        <AccordionPanel>
-                            <MonthlySalaryForm />
-                        </AccordionPanel>
-                    </AccordionItem>
-                    <AccordionItem>
-                        <AccordionButton>
-                            <Box flex="1" textAlign="left">
-                                Maklumat Harta
-                            </Box>
-                            <AccordionIcon />
-                        </AccordionButton>
-                        <AccordionPanel>
-                            <MaklumatHartaForm />
-                        </AccordionPanel>
-                    </AccordionItem>
-                </Accordion>
-            </div>
-            <div style={{ display: isAccordionView ? 'none' : 'block' }}>
-                <Progress
-                    hasStripe
-                    value={progress}
-                    mb="5%"
-                    mx="5%"
-                    isAnimated
-                ></Progress>
-                {step === 1 ? <MonthlySalaryForm /> : <MaklumatHartaForm />}
-                <ButtonGroup mt="5%" w="100%">
-                    <Flex w="100%" justifyContent="space-between">
+            <Progress
+                hasStripe
+                value={progress}
+                mb="5%"
+                isAnimated
+            />
+            {step === 1 ? <MonthlySalaryForm /> : <MaklumatHartaForm />}
+            <ButtonGroup mt="5%" w="100%">
+                <Flex w="100%" justifyContent="space-between">
                         <Flex>
-                            <Button
-                                onClick={() => {
-                                    setStep(step - 1)
-                                    setProgress(progress - 33.33)
-                                }}
-                                isDisabled={step === 1}
-                                colorScheme="teal"
-                                variant="solid"
-                                w="7rem"
-                                mr="5%"
-                            >
-                                Back
-                            </Button>
-                            <Button
-                                w="7rem"
-                                isDisabled={step === 2}
-                                onClick={() => {
-                                    setStep(step + 1)
-                                    if (step === 3) {
-                                        setProgress(100)
-                                    } else {
-                                        setProgress(progress + 33.33)
-                                    }
-                                }}
-                                colorScheme="teal"
-                                variant="outline"
-                            >
-                                Next
-                            </Button>
-                        </Flex>
-                        {step === 2 ? (
-                            <Button
-                                w="7rem"
-                                colorScheme="red"
-                                variant="solid"
-                                onClick={() => {
-                                    toast({
-                                        title: "Account created.",
-                                        description: "We've created your account for you.",
-                                        status: "success",
-                                        duration: 3000,
-                                        isClosable: true
-                                    })
-                                }}
-                            >
-                                Submit
-                            </Button>
-                        ) : null}
+                        <Button
+                            onClick={() => {
+                                setStep(step - 1);
+                                setProgress(progress - 33.33);
+                            }}
+                            isDisabled={step === 1}
+                            colorScheme="teal"
+                            variant="solid"
+                            w="7rem"
+                            mr="5%"
+                        >
+                            Back
+                        </Button>
+                        <Button
+                            w="7rem"
+                            isDisabled={step === 2}
+                            onClick={() => {
+                                setStep(step + 1);
+                                if (step === 3) {
+                                    setProgress(100);
+                                } else {
+                                    setProgress(progress + 33.33);
+                                }
+                            }}
+                            colorScheme="teal"
+                            variant="outline"
+                        >
+                            Next
+                        </Button>
                     </Flex>
-                </ButtonGroup>
-            </div>
+                    {step === 2 ? (
+                        <Button
+                            w="7rem"
+                            colorScheme="red"
+                            variant="solid"
+                            onClick={() => {
+                                toast({
+                                    title: "Account created.",
+                                    description: "We've created your account for you.",
+                                    status: "success",
+                                    duration: 3000,
+                                    isClosable: true
+                                });
+                            }}
+                        >
+                            Submit
+                        </Button>
+                    ) : null}
+                </Flex>
+            </ButtonGroup>
         </Box>
     );
 }
 
+
+
 export default function Multistep() {
-    const { data: session, status } = useSession();
     const router = useRouter();
+    const auth = getAuth();
 
     useEffect(() => {
-        if (status === "loading") return; // Do nothing while loading
-        if (!session) signIn(); // If not authenticated, force log in
-    }, [session, status]);
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // User is not signed in, redirect them to the sign-in page
+                router.push('/signin');
+            }
+        });
 
-    if (status === "loading") {
-        return <p>Loading...</p>;
-    }
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+    }, [auth, router]);
 
-    if (!session) {
-        return <p>Redirecting...</p>; // Show a redirecting message or a spinner
+    // If not authenticated, show a loading indicator or return null
+    if (!auth.currentUser) {
+        return <p>Loading...</p>; // Or a loading spinner
     }
 
     return (

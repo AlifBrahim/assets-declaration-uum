@@ -1,20 +1,41 @@
-import {signIn, getCsrfToken, getProviders, useSession} from 'next-auth/react'
-import Image from 'next/image'
-import styles from '../../styles/Signin.module.css'
-import {useRouter} from "next/router";
+// signin.js
+import React, { useEffect } from 'react';
+import { initializeApp } from 'firebase/app';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import Image from 'next/image';
+import styles from '../../styles/Signin.module.css';
+import { useRouter } from "next/router";
 import Loader from '@/components/loader';
+import { firebaseConfig } from '@/firebaseConfig'; // Make sure to export firebaseConfig from this module
 
-const Signin = ({ providers }) => {
-    const { data: session, status } = useSession();
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Configure FirebaseUI.
+const uiConfig = {
+    signInSuccessUrl: '/', // URL to redirect to after sign-in.
+    signInOptions: [
+        // List of authentication providers enabled for FirebaseUI.
+        auth.EmailAuthProvider.PROVIDER_ID,
+        // auth.GoogleAuthProvider.PROVIDER_ID,
+        // Add other providers you want to support.
+    ],
+};
+
+const Signin = () => {
     const router = useRouter();
 
-    if (status === "loading") {
-        return <Loader />;
-    }
-    if (session) {
-        router.push('/');
-        return null;
-    }
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, redirect to the home page.
+                router.push('/');
+            }
+        });
+    }, [router]);
 
     return (
         <div style={{ overflow: 'hidden', position: 'relative' }}>
@@ -25,32 +46,15 @@ const Signin = ({ providers }) => {
                     <div className={styles.cardContent}>
                         <div>{"UUM Assets Declaration"}</div>
                         <hr/>
-                        {providers &&
-                            Object.values(providers).map(provider => (
-                                <div key={provider.name} style={{ marginBottom: 0 }}>
-                                    <button className={styles.signin} onClick={() => signIn(provider.id)} >
-                                        Sign in with{' '} {provider.name}
-                                    </button>
-                                </div>
-                            ))}
+                        {/* FirebaseUI Sign-in Widget */}
+                        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
                     </div>
                 </div>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src='/login_pattern.svg' alt='Pattern Background' className={styles.styledPattern} />
         </div>
-    )
-}
+    );
+};
 
-export default Signin
-
-export async function getServerSideProps(context) {
-    const providers = await getProviders()
-    const csrfToken = await getCsrfToken(context)
-    return {
-        props: {
-            providers,
-            csrfToken
-        },
-    }
-}
+export default Signin;
