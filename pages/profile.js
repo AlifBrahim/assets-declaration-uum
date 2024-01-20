@@ -51,7 +51,7 @@ export default function Profile() {
                             </Box>
                         </Box>
 
-                        <Text mt="2">Hi, I'm {user.displayName} and I'm an Engineer & Designer, Designer at heart.
+                        <Text mt="2">Hi, I'm {user ? user.displayName : 'Loading...'} and I'm an Engineer & Designer, Designer at heart.
                             I love the design field and have been working with many people across the world to move away from different design paradigms.
                             My design journey started in 2012, and since then I have collaborated with clients like Google, Kik, and more.
                             I have created templates and design processes for</Text>
