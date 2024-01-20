@@ -38,7 +38,7 @@ export default function Profile() {
 
                     <Box p="6">
                         <Box d="flex" alignItems="baseline">
-                            <Heading size="lg">{user.displayName}</Heading>
+                            <Heading size="lg">{user ? user.displayName : 'Loading...'}</Heading>
                             <Box
                                 color="gray.500"
                                 fontWeight="semibold"
