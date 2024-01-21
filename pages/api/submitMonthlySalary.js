@@ -4,6 +4,9 @@ import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 import connection from '@/db';
+import axios from 'axios';
+import FormData from 'form-data';
+
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -14,7 +17,8 @@ if (!admin.apps.length) {
 }
 
 // Configure multer for file uploads
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
+
 
 export const config = {
     api: {
@@ -25,6 +29,8 @@ export const config = {
 export default async (req, res) => {
     console.log('Received request');
     if (req.method === 'POST') {
+        let uploadedFilePath;
+
         console.log('Request method: POST');
 
         // Use multer to parse the form data
@@ -53,20 +59,40 @@ export default async (req, res) => {
 
             const { category, keterangan, salary_jumlah } = req.body;
             const proof = req.files.find(file => file.fieldname === 'proof');
-
-            let relativeFilePath;
             if (proof) {
-                relativeFilePath = path.join('uploads', proof.originalname);
-                const filePath = path.join(process.cwd(), 'public', relativeFilePath);
-                fs.writeFileSync(filePath, fs.readFileSync(proof.path));
-                fs.unlinkSync(proof.path); // Remove the file from the temporary directory
+                try {
+                    // Construct form data to send the file
+                    const formData = new FormData();
+                    formData.append('file', proof.buffer, proof.originalname);
+
+                    // Send the file to your Ubuntu server
+                    const response = await axios.post('http://146.190.102.198:3006/upload', formData, {
+                        headers: {
+                            ...formData.getHeaders(),
+                        },
+                    });
+
+                    // Handle the response from your Ubuntu server here
+                    if (response.status === 200) {
+                        console.log('File uploaded successfully to remote server');
+                        // Use the filename from the server response
+                        uploadedFilePath = `http://146.190.102.198:3006/assets-declaration/uploads/${response.data.filePath}`;
+                    } else {
+                        throw new Error('Failed to upload file to remote server');
+                    }
+                } catch (error) {
+                    console.error('Error uploading file to remote server:', error);
+                    return res.status(500).json({ message: 'Error uploading file to remote server', error });
+                }
             } else {
                 console.log('No file uploaded');
             }
 
+
+// Now, insert the uploadedFilePath into the database instead of the proof object
             console.log('Inserting data into database');
             await new Promise((resolve, reject) => {
-                connection.query('INSERT INTO MonthlyIncome (email, category, description, amount, proof) VALUES (?, ?, ?, ?, ?)', [email, category, keterangan, salary_jumlah, relativeFilePath], (error, results) => {
+                connection.query('INSERT INTO MonthlyIncome (email, category, description, amount, proof) VALUES (?, ?, ?, ?, ?)', [email, category, keterangan, salary_jumlah, uploadedFilePath], (error, results) => {
                     if (error) {
                         console.error('Database error:', error);
                         reject(error);
@@ -77,6 +103,7 @@ export default async (req, res) => {
             }).catch((error) => {
                 return res.status(500).json({ message: 'An error occurred', error });
             });
+
 
             return res.status(200).json({ message: 'Form submitted successfully' });
         });

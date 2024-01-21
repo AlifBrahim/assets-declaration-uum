@@ -28,7 +28,16 @@ const TableComponent = ({ data, title }) => {
                                     <Td>{index + 1}</Td>
                                     <Td>{item.description}</Td>
                                     <Td>{item.amount}</Td>
-                                    <Td>{/* Logic to display proof */}</Td>
+                                    <Td>
+                                        {item.proof ? (
+                                            <a href={item.proof} target="_blank" rel="noopener noreferrer"
+                                               style={{color: 'blue'}}>
+                                                View Proof
+                                            </a>
+                                        ) : (
+                                            'No proof provided'
+                                        )}
+                                    </Td>
                                 </Tr>
                             ))
                         ) : (
