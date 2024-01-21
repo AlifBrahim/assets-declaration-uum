@@ -102,11 +102,15 @@ function AuthenticatedContent() {
 export default function Multistep() {
     const router = useRouter();
     const auth = getAuth();
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // New state for auth status
+    const [isLoading, setIsLoading] = useState(true); // New state for loading status
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                // User is not signed in, redirect them to the sign-in page
+            setIsLoading(false); // Set loading to false when auth state changes
+            if (user) {
+                setIsAuthenticated(true);
+            } else {
                 router.push('/signin');
             }
         });
@@ -115,9 +119,12 @@ export default function Multistep() {
         return () => unsubscribe();
     }, [auth, router]);
 
-    // If not authenticated, show a loading indicator or return null
-    if (!auth.currentUser) {
-        return <p>Loading...</p>; // Or a loading spinner
+    if (isLoading) {
+        return <p>Loading...</p>; // Show loading text while checking auth state
+    }
+
+    if (!isAuthenticated) {
+        return null; // Render nothing if not authenticated (or redirect handled by useEffect)
     }
 
     return (
