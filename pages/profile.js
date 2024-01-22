@@ -1,6 +1,6 @@
-import { Box, Image, Text, Link, Stack, Heading, Flex, Button, Skeleton } from "@chakra-ui/react";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure ,Box, Image, Text, Link, Stack, Heading, Flex, Button, Skeleton, Input} from "@chakra-ui/react";
 import Layout from 'components/Layout'
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth, signOut, updateProfile  } from 'firebase/auth';
 import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
 
@@ -9,6 +9,13 @@ export default function Profile() {
     const user = auth.currentUser;
     const router = useRouter();
     const [isImageLoading, setIsImageLoading] = useState(true);
+    const [editMode, setEditMode] = useState(false);
+    const [displayName, setDisplayName] = useState(user ? user.displayName : '');
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const initialRef = React.useRef();
+
+
+
 
     useEffect(() => {
         if (!user) {
@@ -27,6 +34,28 @@ export default function Profile() {
             console.error('Error signing out:', error);
         });
     };
+    const handleEditToggle = () => {
+        setEditMode(!editMode);
+    };
+
+    const handleDisplayNameChange = (e) => {
+        setDisplayName(e.target.value);
+    };
+
+    const handleSaveDisplayName = () => {
+        if (user) {
+            updateProfile(user, { displayName: displayName }).then(() => {
+                // Profile updated successfully
+                setEditMode(false);
+                onClose(); // Close the modal
+            }).catch((error) => {
+                // An error occurred
+                console.error('Error updating profile:', error);
+            });
+        }
+    };
+
+
 
     return (
         <Layout title="Profile">
@@ -64,6 +93,44 @@ export default function Profile() {
                         <Button colorScheme="teal" variant="outline" mt={4} onClick={handleLogout}>
                             Logout
                         </Button>
+                        <Button colorScheme="teal" variant="outline" mt={4} onClick={onOpen}>
+                            Edit Profile
+                        </Button>
+
+                        {/*{editMode ? (*/}
+                        {/*    <Input*/}
+                        {/*        placeholder="Enter your name"*/}
+                        {/*        value={displayName}*/}
+                        {/*        onChange={handleDisplayNameChange}*/}
+                        {/*    />*/}
+                        {/*) : (*/}
+                        {/*    <Heading size="lg">{user ? user.displayName : 'Loading...'}</Heading>*/}
+                        {/*)}*/}
+                        {/*<Button colorScheme="teal" variant="outline" mt={4} onClick={handleEditToggle}>*/}
+                        {/*    {editMode ? 'Cancel' : 'Edit Profile'}*/}
+                        {/*</Button>*/}
+                        {/*{editMode && (*/}
+                        {/*    <Button colorScheme="teal" variant="solid" mt={4} ml={2} onClick={handleSaveDisplayName}>*/}
+                        {/*        Save Changes*/}
+                        {/*    </Button>*/}
+                        {/*)}*/}
+                        <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
+                            <ModalOverlay />
+                            <ModalContent>
+                                <ModalHeader>Edit Profile</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody pb={6}>
+                                    <Input ref={initialRef} placeholder="Enter your name" value={displayName} onChange={handleDisplayNameChange} />
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button colorScheme="teal" mr={3} onClick={handleSaveDisplayName}>
+                                        Save Changes
+                                    </Button>
+                                    <Button onClick={onClose}>Cancel</Button>
+                                </ModalFooter>
+                            </ModalContent>
+                        </Modal>
+
                     </Box>
                 </Box>
             </Flex>

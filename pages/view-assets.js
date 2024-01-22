@@ -3,9 +3,14 @@ import TableComponent from './assets-declaration/monthly-salary-table';
 import Layout from 'components/Layout';
 import {Box, Center, Container, Flex, Heading, Spacer, useToast} from "@chakra-ui/react";
 import React, {useEffect, useState} from "react";
-import {getAuth} from "firebase/auth";
+import { useRouter } from "next/router";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function ViewAssetsPage() {
+    const router = useRouter();
+    const auth = getAuth();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const toast = useToast();
 
     const [data, setData] = useState([]);
@@ -56,7 +61,29 @@ export default function ViewAssetsPage() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+
+        // Subscribe to the auth state change
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setIsLoading(false);
+            if (user) {
+                setIsAuthenticated(true);
+            } else {
+                // Redirect to sign-in page if not authenticated
+                router.push('/signin');
+            }
+        });
+
+        // Cleanup the subscription on unmount
+        return () => unsubscribe();
+    }, [auth, router]);
+
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
+
+    if (!isAuthenticated) {
+        return null; // You can also return a simple message or a spinner here
+    }
 
     return (
         <Layout title="View Assets">
