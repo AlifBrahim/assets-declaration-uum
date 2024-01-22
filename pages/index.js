@@ -9,7 +9,7 @@ export default function AssetsDeclarationPage() {
         >
             <div className="min-h-screen flex flex-col">
                 <div className="m-auto">
-                    <h1 className="text-4xl">Hola</h1>
+                    <h1 className="text-4xl">Welcome to UUM Assets Declaration Website.</h1>
                 </div>
             </div>
         </Layout>

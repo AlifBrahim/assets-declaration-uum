@@ -33,7 +33,7 @@ export default function Profile() {
             <Flex justify="center" align="center">
                 <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
                     <Skeleton isLoaded={!isImageLoading}>
-                        <Image src="https://bit.ly/sage-adebayo" alt="Adrian Brewer" onLoad={() => setIsImageLoading(false)} />
+                        <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWwWf4v8y-sHDj4CzyJ07YQa6DlV4T1QyBvA&usqp=CAU" alt onLoad={() => setIsImageLoading(false)} />
                     </Skeleton>
 
                     <Box p="6">
@@ -47,19 +47,13 @@ export default function Profile() {
                                 textTransform="uppercase"
                                 ml="2"
                             >
-                                Engineer & Designer
+                                
                             </Box>
                         </Box>
 
-                        <Text mt="2">Hi, I'm {user ? user.displayName : 'Loading...'} and I'm an Engineer & Designer, Designer at heart.
-                            I love the design field and have been working with many people across the world to move away from different design paradigms.
-                            My design journey started in 2012, and since then I have collaborated with clients like Google, Kik, and more.
-                            I have created templates and design processes for</Text>
+                        <Text mt="2">Welcome and Hi, {user ? user.displayName : 'Loading...'}
+                             </Text>
 
-                        <Stack mt="2" isInline spacing="2">
-                            <Link href="#" color="teal.500">Product Management</Link>
-                            <Link href="#" color="teal.500">About Me</Link>
-                        </Stack>
 
                         <Button colorScheme="teal" variant="outline" mt={4} onClick={handleLogout}>
                             Logout
