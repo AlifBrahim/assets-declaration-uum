@@ -2,15 +2,30 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-
 import { SlHome } from 'react-icons/sl'
 import { BsInfoSquare, BsEnvelopeAt } from 'react-icons/bs'
 import { FaTshirt, FaRedhat } from 'react-icons/fa'
-
+import { MdAdminPanelSettings } from "react-icons/md";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import logo from '@/img/logo uum.png'
 
 export default function Sidebar({ show, setter }) {
     const router = useRouter();
+    const [isAdmin, setIsAdmin] = useState(false);
+    useEffect(() => {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Check if the user has the admin custom claim
+                user.getIdTokenResult().then((idTokenResult) => {
+                    setIsAdmin(idTokenResult.claims.admin);
+                });
+            } else {
+                // User is signed out
+                setIsAdmin(false);
+            }
+        });
+    }, []);
 
     // Define our base class
     const className = "bg-black w-[250px] transition-[margin-left] ease-in-out duration-500 fixed md:static top-0 bottom-0 left-0 z-40";
@@ -75,16 +90,23 @@ export default function Sidebar({ show, setter }) {
                         route="/view-assets"
                         icon={<FaRedhat />}
                     />
-                    <MenuItem
-                        name="About Us"
-                        route="/about"
-                        icon={<BsInfoSquare />}
-                    />
-                    <MenuItem
-                        name="Contact"
-                        route="/contact"
-                        icon={<BsEnvelopeAt />}
-                    />
+                    {/*<MenuItem*/}
+                    {/*    name="About Us"*/}
+                    {/*    route="/about"*/}
+                    {/*    icon={<BsInfoSquare />}*/}
+                    {/*/>*/}
+                    {/*<MenuItem*/}
+                    {/*    name="Contact"*/}
+                    {/*    route="/contact"*/}
+                    {/*    icon={<BsEnvelopeAt />}*/}
+                    {/*/>*/}
+                    {isAdmin && (
+                        <MenuItem
+                            name="Admin"
+                            route="/admin"
+                            icon={<MdAdminPanelSettings/>} // Replace YourAdminIcon with the actual icon component for Admin
+                        />
+                    )}
                 </div>
             </div>
             {show ? <ModalOverlay /> : <></>}

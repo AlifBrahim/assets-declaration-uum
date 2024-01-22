@@ -6,6 +6,7 @@ import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStat
 import axios from 'axios';
 import { firebaseConfig } from '@/firebaseConfig'; // Make sure to export firebaseConfig from this module
 import styles from '../styles/Signin.module.css';
+import ReCAPTCHA from "react-google-recaptcha";
 import Link from "next/link"; // Import the CSS module
 
 
@@ -18,11 +19,21 @@ const Signin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [captchaToken, setCaptchaToken] = useState(null);
+
+    const onCaptchaChange = (token) => {
+        setCaptchaToken(token);
+    };
+
 
     const handleSignIn = async (event) => {
         event.preventDefault();
         setError('');
 
+        if (!captchaToken) {
+            setError('Please complete the CAPTCHA challenge.');
+            return;
+        }
         // Verify if email is allowed before signing in
         const response = await fetch('/api/verifyEmail', {
             method: 'POST',
@@ -33,6 +44,21 @@ const Signin = () => {
         });
 
         if (response.ok) {
+            // Verify reCAPTCHA token
+            const captchaResponse = await fetch('/api/verifyCaptcha', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: captchaToken })
+            });
+
+            const captchaVerificationResult = await captchaResponse.json();
+
+            if (!captchaVerificationResult.success) {
+                setError('Failed CAPTCHA verification. Please try again.');
+                return;
+            }
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
@@ -149,6 +175,11 @@ const Signin = () => {
                 <br/>
                 <br/>
                 <p>First time logging in? Click on Forgot Password.</p>
+                <ReCAPTCHA
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                    onChange={onCaptchaChange}
+                    className={styles.recaptcha}
+                />
             </form>
         </div>
     );

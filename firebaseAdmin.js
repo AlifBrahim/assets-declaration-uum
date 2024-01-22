@@ -44,6 +44,30 @@ export const createUserIfAllowed = async (email) => {
     }
 };
 
+// Function to get the list of all admin users
+const listAdminUsers = async () => {
+    const listUsersResult = await admin.auth().listUsers();
+    const admins = listUsersResult.users
+        .filter(user => user.customClaims && user.customClaims.admin)
+        .map(user => ({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            customClaims: user.customClaims
+        }));
+
+    return admins;
+};
+
+// Call the function and log the admins
+listAdminUsers()
+    .then(admins => {
+        console.log('Admin users:', admins);
+    })
+    .catch(error => {
+        console.error('Error listing admin users:', error);
+    });
+
 
 // Export the auth interface for server-side use
 export const auth = admin.auth();
