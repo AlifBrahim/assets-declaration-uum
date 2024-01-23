@@ -62,7 +62,7 @@ export default function Profile() {
             <Flex justify="center" align="center">
                 <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
                     <Skeleton isLoaded={!isImageLoading}>
-                        <Image src="https://bit.ly/sage-adebayo" alt="" onLoad={() => setIsImageLoading(false)} />
+                        <Image src="https://drive.google.com/file/d/10QE5irsavzchVubvlqkuPqeo52HYD3f0/view?usp=sharing" alt="" onLoad={() => setIsImageLoading(false)} />
                     </Skeleton>
 
                     <Box p="6">
