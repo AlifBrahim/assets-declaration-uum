@@ -1,11 +1,15 @@
 // FormComponent.js
 import { Button, FormControl, FormLabel, FormErrorMessage, Input, Select } from '@chakra-ui/react';
-import { FilePond } from 'react-filepond';
+import { FilePond, registerPlugin } from 'react-filepond';
 import 'filepond/dist/filepond.min.css';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+
+// Register the plugin globally before the component definition
+registerPlugin(FilePondPluginFileValidateType);
 
 // Yup schema for validation
 const validationSchema = yup.object({
@@ -56,9 +60,16 @@ const FormComponent = ({ onSubmit, filePondRef }) => {
 
             <FormControl isInvalid={errors.proof}>
                 <FormLabel htmlFor="proof">Bukti</FormLabel>
-                <FilePond name="proof" id="proof" ref={filePondRef} />
+                <FilePond
+                    name="proof"
+                    id="proof"
+                    ref={filePondRef}
+                    acceptedFileTypes={['application/pdf', 'image/png', 'image/jpeg', 'image/gif']}
+                    // If you haven't already, make sure the FilePondPluginFileValidateType is registered
+                />
                 <FormErrorMessage>{errors.proof?.message}</FormErrorMessage>
             </FormControl>
+
 
             <Button type="submit" colorScheme="red" mt={5}>
                 Tambah
